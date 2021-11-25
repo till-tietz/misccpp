@@ -10,6 +10,54 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// rm_el
+IntegerVector rm_el(IntegerVector input);
+RcppExport SEXP _misccpp_rm_el(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
+    rcpp_result_gen = Rcpp::wrap(rm_el(input));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gen_pairs
+IntegerMatrix gen_pairs(IntegerVector input);
+RcppExport SEXP _misccpp_gen_pairs(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_pairs(input));
+    return rcpp_result_gen;
+END_RCPP
+}
+// extract
+IntegerVector extract(NumericMatrix m, IntegerVector r, int c);
+RcppExport SEXP _misccpp_extract(SEXP mSEXP, SEXP rSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type m(mSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type r(rSEXP);
+    Rcpp::traits::input_parameter< int >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(extract(m, r, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pareto_sim
+List pareto_sim(IntegerVector pop, IntegerVector mon, int iter);
+RcppExport SEXP _misccpp_pareto_sim(SEXP popSEXP, SEXP monSEXP, SEXP iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type pop(popSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type mon(monSEXP);
+    Rcpp::traits::input_parameter< int >::type iter(iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(pareto_sim(pop, mon, iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // assign_cluster
 List assign_cluster(NumericMatrix points, NumericMatrix centroids);
 RcppExport SEXP _misccpp_assign_cluster(SEXP pointsSEXP, SEXP centroidsSEXP) {
@@ -50,6 +98,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_misccpp_rm_el", (DL_FUNC) &_misccpp_rm_el, 1},
+    {"_misccpp_gen_pairs", (DL_FUNC) &_misccpp_gen_pairs, 1},
+    {"_misccpp_extract", (DL_FUNC) &_misccpp_extract, 3},
+    {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 3},
     {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
     {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 2},
     {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 4},
