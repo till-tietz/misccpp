@@ -1,4 +1,4 @@
-#' linear regression with gradient descent 
+#' linear regression with adaptive gradient descent 
 #' @param data a data.frame or matrix of data 
 #' @param y a vector of the column name or index of the response variable
 #' @param x a vector of column names or indeces of the predictor variables
@@ -18,15 +18,26 @@ lm_gd <- function(data, y, x, lr = 0.01, iter = 1000){
   alpha[1] <- runif(1, -10,10)
   beta[1,] <- runif(ncol(beta), -10,10)
   
+  lr_n <- rep(lr, ncol(x) + 1)
+  
+  grad <- matrix(0, iter, ncol(x) + 1)
+  ema <- matrix(0, iter, ncol(x) + 1)
+  
   for(i in c(2:iter)){
     
     b_prev <- beta[i-1,]
     a_prev <- alpha[i-1]
     gx <- (y - (a_prev + rowSums(x %*% diag(b_prev))))
     
-    beta[i,] <- b_prev - lr * colMeans(-2 * x * gx)
-    alpha[i] <- a_prev - lr * mean(-2 * gx)
+    grad_b <- colMeans(-2 * x * gx) 
+    grad_a <- mean(-2 * gx)
     
+    grad[i,] <- c(grad_a, grad_b)^2
+    ema[i,] <- (grad[i,] - ema[i-1,]) * (2/i) + ema[i-1,]
+    lr_n <- lr / sqrt(ema[i,] + 1e-8)
+    
+    beta[i,] <- b_prev - lr_n[2:length(lr_n)] * grad_b
+    alpha[i] <- a_prev - lr_n[1] * grad_a
   }
   
   coef <- c(alpha[iter],beta[iter,])
