@@ -2,7 +2,6 @@
 using namespace Rcpp;
 
 
-
 // [[Rcpp::export]]
 
 List assign_cluster(NumericMatrix points, NumericMatrix centroids){
