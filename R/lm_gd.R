@@ -4,10 +4,11 @@
 #' @param x a vector of column names or indeces of the predictor variables
 #' @param lr dbl specifying learning rate
 #' @param iter dbl specifying number of iterations 
+#' @adaptive logical if TRUE adaptive gradient descent is used
 #' @return a list including a named vector of estimated coefficients, a vector of intercept values for each iteration and a matrix of coefficients for each iteration. 
 #' @export
 
-lm_gd <- function(data, y, x, lr = 0.01, iter = 1000){
+lm_gd <- function(data, y, x, lr = 0.01, iter = 1000, adaptive = FALSE){
   
   y <- data[[y]]
   x <- as.matrix(data[,x])
@@ -19,8 +20,6 @@ lm_gd <- function(data, y, x, lr = 0.01, iter = 1000){
   beta[1,] <- runif(ncol(beta), -10,10)
   
   lr_n <- rep(lr, ncol(x) + 1)
-  
-  grad <- matrix(0, iter, ncol(x) + 1)
   ema <- matrix(0, iter, ncol(x) + 1)
   
   for(i in c(2:iter)){
@@ -32,9 +31,10 @@ lm_gd <- function(data, y, x, lr = 0.01, iter = 1000){
     grad_b <- colMeans(-2 * x * gx) 
     grad_a <- mean(-2 * gx)
     
-    grad[i,] <- c(grad_a, grad_b)^2
-    ema[i,] <- (grad[i,] - ema[i-1,]) * (2/i) + ema[i-1,]
-    lr_n <- lr / sqrt(ema[i,] + 1e-8)
+    if(adaptive == TRUE){
+      ema[i,] <- (c(grad_a, grad_b)^2 - ema[i-1,]) * (2/i) + ema[i-1,]
+      lr_n <- lr / sqrt(ema[i,] + 1e-8)
+    }
     
     beta[i,] <- b_prev - lr_n[2:length(lr_n)] * grad_b
     alpha[i] <- a_prev - lr_n[1] * grad_a

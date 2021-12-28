@@ -4,7 +4,7 @@
 \alias{lm_gd}
 \title{linear regression with adaptive gradient descent}
 \usage{
-lm_gd(data, y, x, lr = 0.01, iter = 1000)
+lm_gd(data, y, x, lr = 0.01, iter = 1000, adaptive = FALSE)
 }
 \arguments{
 \item{data}{a data.frame or matrix of data}
