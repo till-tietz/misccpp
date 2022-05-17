@@ -13,8 +13,8 @@ extract <- function(m, r, c) {
     .Call(`_misccpp_extract`, m, r, c)
 }
 
-pareto_sim <- function(pop, mon, iter) {
-    .Call(`_misccpp_pareto_sim`, pop, mon, iter)
+pareto_sim <- function(pop, mon, prob, iter) {
+    .Call(`_misccpp_pareto_sim`, pop, mon, prob, iter)
 }
 
 assign_cluster <- function(points, centroids) {

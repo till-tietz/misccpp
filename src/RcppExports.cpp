@@ -46,15 +46,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // pareto_sim
-List pareto_sim(IntegerVector pop, IntegerVector mon, int iter);
-RcppExport SEXP _misccpp_pareto_sim(SEXP popSEXP, SEXP monSEXP, SEXP iterSEXP) {
+List pareto_sim(IntegerVector pop, IntegerVector mon, double prob, int iter);
+RcppExport SEXP _misccpp_pareto_sim(SEXP popSEXP, SEXP monSEXP, SEXP probSEXP, SEXP iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type pop(popSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type mon(monSEXP);
+    Rcpp::traits::input_parameter< double >::type prob(probSEXP);
     Rcpp::traits::input_parameter< int >::type iter(iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(pareto_sim(pop, mon, iter));
+    rcpp_result_gen = Rcpp::wrap(pareto_sim(pop, mon, prob, iter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -101,7 +102,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_rm_el", (DL_FUNC) &_misccpp_rm_el, 1},
     {"_misccpp_gen_pairs", (DL_FUNC) &_misccpp_gen_pairs, 1},
     {"_misccpp_extract", (DL_FUNC) &_misccpp_extract, 3},
-    {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 3},
+    {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
     {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
     {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 2},
     {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 4},
