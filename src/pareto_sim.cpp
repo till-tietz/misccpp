@@ -51,7 +51,7 @@ IntegerVector extract(NumericMatrix m, IntegerVector r, int c){
 
 // [[Rcpp::export]]
 List pareto_sim(IntegerVector pop, IntegerVector mon, NumericVector prob, int iter){
-  
+
   Function cwhich("which");
   
   List lmoney(iter);
