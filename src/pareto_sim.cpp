@@ -50,9 +50,8 @@ IntegerVector extract(NumericMatrix m, IntegerVector r, int c){
 
 
 // [[Rcpp::export]]
-List pareto_sim(IntegerVector pop, IntegerVector mon, double prob, int iter){
-  
-  Function crbinom("rbinom");
+List pareto_sim(IntegerVector pop, IntegerVector mon, NumericVector prob, int iter){
+
   Function cwhich("which");
   
   List lmoney(iter);
@@ -74,17 +73,23 @@ List pareto_sim(IntegerVector pop, IntegerVector mon, double prob, int iter){
     
     IntegerMatrix pairs = gen_pairs(pop_i);
     
-    IntegerVector wins = crbinom(pairs.nrow(),1, prob);
-    
     for(int j = 0; j < pairs.nrow(); j++){
       
       int p1 = pairs(j,0) - 1;
       int p2 = pairs(j,1) - 1;
       
-      if(wins[j] == 0){
+      double prob_j_1 = prob[p1] / (prob[p1] + prob[p2]);
+      double prob_j_2 = prob[p2] / (prob[p1] + prob[p2]);
+      
+      NumericVector win_1 = rbinom(1,1,prob_j_1);  
+      NumericVector win_2 = rbinom(1,1,prob_j_2);
+      
+      if(win_1[0] < win_2[0]){
         money[p1] = money[p1] - 1;
         money[p2] = money[p2] + 1;
-      } else {
+      } 
+      
+      if(win_1[0] > win_2[0]){
         money[p1] = money[p1] + 1;
         money[p2] = money[p2] - 1;
       }
@@ -94,5 +99,4 @@ List pareto_sim(IntegerVector pop, IntegerVector mon, double prob, int iter){
   
   return lmoney;
 }
-
 
