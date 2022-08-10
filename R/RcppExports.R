@@ -5,6 +5,30 @@ ergodic_sim <- function(agents, rounds, money, win, loss) {
     .Call(`_misccpp_ergodic_sim`, agents, rounds, money, win, loss)
 }
 
+int_vec_insert <- function(vec, vals, pos) {
+    .Call(`_misccpp_int_vec_insert`, vec, vals, pos)
+}
+
+int_mat_insert <- function(m, col, row, vals) {
+    .Call(`_misccpp_int_mat_insert`, m, col, row, vals)
+}
+
+mat_to_mat_insert <- function(old_m, new_m, new_rows, new_cols, old_rows, old_cols) {
+    .Call(`_misccpp_mat_to_mat_insert`, old_m, new_m, new_rows, new_cols, old_rows, old_cols)
+}
+
+mat_by_mat <- function(m, row, col) {
+    .Call(`_misccpp_mat_by_mat`, m, row, col)
+}
+
+lt_permute <- function(data) {
+    .Call(`_misccpp_lt_permute`, data)
+}
+
+lt_gibbs <- function(data, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, priors, param_init) {
+    .Call(`_misccpp_lt_gibbs`, data, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, priors, param_init)
+}
+
 rm_el <- function(input) {
     .Call(`_misccpp_rm_el`, input)
 }
