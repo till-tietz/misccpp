@@ -2,6 +2,20 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
+// cpp helper to move vector elements to new indices
+// [[Rcpp::export]]
+std::vector<int> move_elements(std::vector<int> x, int old_index, int new_index){
+  
+  if(old_index > new_index){
+    std::rotate(x.rend() - old_index - 1, x.rend() - old_index, x.rend() - new_index);
+  } else {
+    std::rotate(x.begin() + old_index, x.begin() + old_index + 1, x.begin() + new_index + 1);
+  }
+  
+  return x;
+}
+
+
 // n choose k helper for combn_cpp
 // [[Rcpp::export]]
 uint64_t choose_cpp(uint64_t n, uint64_t k) {
@@ -42,7 +56,12 @@ std::vector<double> rdirichlet_cpp(std::vector<double> alpha){
   double sum = 0.0;
   
   for(int i = 0; i < alpha.size(); i++){
-    vec[i] = as<double>(Rcpp::rgamma(1,alpha[i],(1/alpha[i])));
+    
+    if(alpha[i] > 0.0){
+      vec[i] = as<double>(Rcpp::rgamma(1,alpha[i],(1/alpha[i])));
+    } else {
+      vec[i] = 0.0;
+    }
     sum += vec[i];
   }
   
@@ -55,7 +74,6 @@ std::vector<double> rdirichlet_cpp(std::vector<double> alpha){
 
 // cpp implementation of R table
 // [[Rcpp::export]]
-
 std::vector<int> table_cpp(std::vector<int> x){
   
   std::vector<int> vec(x);
@@ -152,9 +170,10 @@ arma::mat mat_to_mat_insert(arma::mat old_m,
   
   for(int i = 0; i < new_rows.size(); i++){
     for(int j = 0; j < new_cols.size(); j++){
-      new_m(new_rows[i] - 1, new_cols[j] - 1) = old_m(old_rows[i] - 1, old_cols[j] - 1);
+      new_m(new_rows[i] - 1 , new_cols[j] - 1) = old_m(old_rows[i] - 1 , old_cols[j] - 1);
     }
   }
+  
   return new_m;
 }
 
@@ -243,8 +262,6 @@ std::vector<std::vector<int>> lt_permute(List link_list,
 }
 
 
-
-// gibbs sampler
 // [[Rcpp::export]]
 List lt_gibbs(DataFrame data,
               arma::mat y_samp,
@@ -257,16 +274,19 @@ List lt_gibbs(DataFrame data,
               List priors,
               List param_init) {
   
-  //Function c_unlist("unlist");
-  //Function c_expand_grid("expand.grid");
-  //Function c_combn("combn");
-  //Function c_setdiff("setdiff");
-  //Function c_which("which");
-  //Function c_rdirichlet("rdirichlet");
   Function cpp_sample("sample");
   
   // permute data
-  std::vector<std::vector<int>> data_p_waves = lt_permute(data["links_list"],data["rds_wave"],data["name"]);
+  std::vector<std::vector<int>> data_p_waves;
+  int last_wave = 0;
+  
+  while(last_wave < 1){
+    
+    data_p_waves = lt_permute(data["links_list"],data["rds_wave"],data["name"]);
+    last_wave = data_p_waves[n_waves - 1].size();
+    
+  }
+  
   std::vector<int> data_p_waves_id;
   
   for(int i = 0; i < data_p_waves.size(); i++){
@@ -306,11 +326,11 @@ List lt_gibbs(DataFrame data,
   arma::cube b(n_strata,n_strata,chain_samples);
   std::vector<int> n;
   
-  l.row(0) = arma::conv_to<arma::rowvec>::from(param_init["l_0"]);
+  l.row(0) = arma::conv_to<arma::rowvec>::from(as<std::vector<double>>(param_init["l_0"]));
   //l.push_back(param_init["l_0"]);
   b.slice(0) = as<arma::mat>(param_init["b_0"]);
   //b.push_back(m_to_v_double(as<NumericMatrix>(param_init["b_0"])));
-  n.push_back(param_init["n_0"]);
+  n.push_back(as<int>(param_init["n_0"]));
   
   int prior_n = priors["p_n"];
   std::vector<double> prior_l = priors["p_l"];
@@ -389,7 +409,7 @@ List lt_gibbs(DataFrame data,
     }
     
     std::vector<int> nt = as<std::vector<int>>(cpp_sample(n_post_range, 1, false, n_sample_prob));
-    n[t] = nt[0];
+    n.push_back(nt[0]);
     
     //#######################
     //# generate new lambda #
@@ -435,7 +455,6 @@ List lt_gibbs(DataFrame data,
     
     
     // populate link matrix for reordered sample
-    
     // generate empty matrix and fill known link pairs
     std::vector<int> g1 = rep_times(gen_range(0,n_waves - 1), n_waves);
     std::vector<int> g2 = rep_each(gen_range(0, n_waves - 1), n_waves);
@@ -451,7 +470,7 @@ List lt_gibbs(DataFrame data,
                                                                     data_p_waves[g2[i]]);
     }
     
-    // generate unkown pairs
+    //generate unkown pairs
     std::vector<int> lp_1;
     for(int i = 0; i < data_p_reorder.size() - 1; i++){
       lp_1.insert(lp_1.end(), data_p_reorder[i].begin(), data_p_reorder[i].end());
@@ -461,34 +480,60 @@ List lt_gibbs(DataFrame data,
     std::vector<int> lp_2 = gen_range(1,n[t]);
     
     std::vector<int> lp;
-    std::set_difference(lp_2.begin(),lp_2.end(),lp_1.begin(),lp_2.end(),
+    std::set_difference(lp_2.begin(),lp_2.end(),lp_1.begin(),lp_1.end(),
                         std::inserter(lp,lp.end()));
     
-    arma::mat link_pairs =  combn_cpp(lp,2);
-    int n_pairs = link_pairs.n_rows;
     
-    std::vector<double> link_prob(n_pairs);
-    std::generate(link_prob.begin(), link_prob.end(), [](){
-      return (double)std::rand() / (double)RAND_MAX;
-    });
-    
-    // add link between unkown pairs based on link probability
-    for(int i = 0; i < n_pairs; i++){
+    // if an unknown pair exists add links based on link probability
+    if(lp.size() > 1){
       
-      int id_1 = link_pairs(i,0) - 1;
-      int id_2 = link_pairs(i,1) - 1;
+      arma::mat link_pairs =  combn_cpp(lp,2);
+      int n_pairs = link_pairs.n_rows;
       
-      double link_prob_i = b.slice(t)(stratum[id_1], stratum[id_2]);
+      std::vector<double> link_prob(n_pairs);
+      std::generate(link_prob.begin(), link_prob.end(), [](){
+        return (double)std::rand() / (double)RAND_MAX;
+      });
       
-      if(link_prob_i > link_prob[i]){
-        y(id_1,id_2) = 1;
-        y(id_2,id_1) = 1;
+      for(int i = 0; i < n_pairs; i++){
+        
+        int id_1 = link_pairs(i,0) - 1;
+        int id_2 = link_pairs(i,1) - 1;
+        
+        double link_prob_i = b.slice(t - 1)(stratum[id_1] - 1, stratum[id_2] - 1);
+        
+        if(link_prob_i > link_prob[i]){
+          y(id_1,id_2) = 1;
+          y(id_2,id_1) = 1;
+        }
+        
       }
       
     }
     
     // new lambda
     std::vector<int> strata_count_int = table_cpp(stratum);
+    
+    // if a certain stratum was not sampled we need to add 0 to the count
+    if(strata_count_int.size() < n_strata){
+      
+      std::vector<int> s = gen_range(1,n_strata);
+      std::vector<int> s_new(stratum);
+      sort(s_new.begin(),s_new.end());
+      std::vector<int> s_miss;
+      std::set_difference(s.begin(),s.end(),s_new.begin(),s_new.end(),
+                          std::inserter(s_miss, s_miss.end()));
+      
+      for(int i = 0; i < s_miss.size(); i++){
+        strata_count_int.push_back(0);
+      }
+      
+      for(int i = 0; i < s_miss.size(); i++){
+        strata_count_int = move_elements(strata_count_int,
+                                         strata_count_int.size() - (s_miss.size() - i),
+                                         s_miss[i] - 1);
+      }
+    }
     
     std::vector<double> alphas;
     std::transform(strata_count_int.begin(), strata_count_int.end(),
@@ -501,14 +546,54 @@ List lt_gibbs(DataFrame data,
     //# generate new beta #
     //#####################
     
+    // count links between strata
+    arma::mat strata_link_count(n_strata,n_strata);
+    arma::mat node_pairs = combn_cpp(gen_range(1,n[t]),2);
+    int n_pairs_b = node_pairs.n_rows;
     
+    for(int i = 0; i < n_pairs_b; i++){
+      
+      int np_1 = node_pairs(i,0) - 1;
+      int np_2 = node_pairs(i,1) - 1;
+      
+      int c_1 = y(np_1,np_2);
+      int c_2 = y(np_2,np_1);
+      
+      int stratum_1 = stratum[np_1] - 1;
+      int stratum_2 = stratum[np_2] - 1;
+      
+      strata_link_count(stratum_1,stratum_2) = strata_link_count(stratum_1,stratum_2) + c_1;
+      strata_link_count(stratum_2,stratum_1) = strata_link_count(stratum_2,stratum_1) + c_2;
+      
+    }
     
+    arma::mat b_i(n_strata,n_strata);
+    
+    for(int i = 0; i < n_strata; i++){
+      
+      double shape_1 = strata_link_count(i,i) + prior_b;
+      double shape_2 = choose_cpp(strata_count_int[i],2) - strata_link_count(i,i) + prior_b;
+      b_i(i,i) = as<double>(Rcpp::rbeta(1,shape_1,shape_2));
+      
+    }
+    
+    for(int i = 0; i < n_strata - 1; i++){
+      for(int j = i + 1; j < n_strata; j++){
+        
+        double shape_1 = strata_link_count(i,j) + strata_link_count(j,i) + prior_b;
+        double shape_2 = strata_count_int[i] * strata_count_int[j] - strata_link_count(i,j) - strata_link_count(j,i) + prior_b;
+        double beta_i = as<double>(Rcpp::rbeta(1,shape_1,shape_2));
+        
+        b_i(i,j) = beta_i;
+        b_i(j,i) = beta_i;
+        
+      }
+    }
+    
+    b.slice(t) = b_i;
   }
   
-  List ret(3);
-  ret[0] = data_p_reorder;
-  ret[1] = data_p_waves;
-  ret[2] = ins_pos_us;
+  List ret = List::create(n,l,b);
   return ret;
 }
 
