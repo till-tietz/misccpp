@@ -22,10 +22,10 @@ std::vector<int> move_elements(std::vector<int> x, int old_index, int new_index)
 }
 
 //' n choose k helper for combn_cpp
-//' 
-//' @param n integer number of elements to choose from 
+//'
+//' @param n integer number of elements to choose from
 //' @param k integer number of elements to choose
-//' @return integer number of ways to choose k items out of n 
+//' @return integer number of ways to choose k items out of n
 //' @keywords internal
 // [[Rcpp::export]]
 uint64_t choose_cpp(uint64_t n, uint64_t k) {
@@ -34,11 +34,11 @@ uint64_t choose_cpp(uint64_t n, uint64_t k) {
 }
 
 //' helper to generate combinations of x k at a time (cpp implementation of combn)
-//' 
-//' @param x integer vector of elements to combine 
-//' @param K integer order of combinations 
+//'
+//' @param x integer vector of elements to combine
+//' @param K integer order of combinations
 //' @return a matrix of k-wise combinations of elements in x
-//' @keywords internal 
+//' @keywords internal
 // [[Rcpp::export]]
 arma::mat combn_cpp(std::vector<int> x, int K) {
   int N = x.size();
@@ -63,8 +63,8 @@ arma::mat combn_cpp(std::vector<int> x, int K) {
 }
 
 //' helper to generate single draw from dirichlet distribution
-//' 
-//' @param alpha double vector of alpha parameters 
+//'
+//' @param alpha double vector of alpha parameters
 //' @return a double vector containing a single draw from a dirichlet distribution
 //' @keywords internal
 // [[Rcpp::export]]
@@ -92,10 +92,10 @@ std::vector<double> rdirichlet_cpp(std::vector<double> alpha){
 }
 
 //' cpp implementation of R table
-//' 
-//' @param x an integer vector of elements to be counted 
+//'
+//' @param x an integer vector of elements to be counted
 //' @return an integer vector of counts of unique elements in x (sorted in ascending order of elements in x)
-//' @keywords internal 
+//' @keywords internal
 // [[Rcpp::export]]
 std::vector<int> table_cpp(std::vector<int> x){
   
@@ -113,11 +113,11 @@ std::vector<int> table_cpp(std::vector<int> x){
 }
 
 //' cpp implementation of standard R rep
-//' 
+//'
 //' @param x integer vector to be repeated
-//' @param n integer number of repetitions 
-//' @return integer vector x repeated n times 
-//' @keywords internal 
+//' @param n integer number of repetitions
+//' @return integer vector x repeated n times
+//' @keywords internal
 // [[Rcpp::export]]
 std::vector<int> rep_times(std::vector<int> x, int n){
   
@@ -131,11 +131,11 @@ std::vector<int> rep_times(std::vector<int> x, int n){
 }
 
 //' cpp implementation of R rep with each argument
-//' 
+//'
 //' @param x integer vector of elements to be repeated
-//' @param n integer number of repetitions 
-//' @return integer vector with each element in x repeated n times in order 
-//' @keywords internal 
+//' @param n integer number of repetitions
+//' @return integer vector with each element in x repeated n times in order
+//' @keywords internal
 // [[Rcpp::export]]
 std::vector<int> rep_each(std::vector<int> x, int n){
   
@@ -151,7 +151,7 @@ std::vector<int> rep_each(std::vector<int> x, int n){
 }
 
 //' helper to generate range of consecutive integers
-//' 
+//'
 //' @param from integer first integer
 //' @param to last integer
 //' @return integer vector of consecutive integers between from and to inclusive
@@ -168,11 +168,11 @@ std::vector<int> gen_range(int from,
 }
 
 //' helper to do random access insertion for vectors
-//' 
+//'
 //' @param vec integer vector to insert values into
 //' @param vals integer vector of values to insert into vec
-//' @param pos integer vector of index positions in vec to insert vals into 
-//' @return integer vector with vals inserted at pos 
+//' @param pos integer vector of index positions in vec to insert vals into
+//' @return integer vector with vals inserted at pos
 //' @keywords internal
 // [[Rcpp::export]]
 std::vector<int> int_vec_insert(std::vector<int> vec,
@@ -188,15 +188,15 @@ std::vector<int> int_vec_insert(std::vector<int> vec,
 
 
 //' helper to do random access insertion of matrix into another matrix
-//' 
+//'
 //' @param old_m matrix to take values from
-//' @param new_m matrix to insert values into 
-//' @param new_rows integer vector of row indeces of new_m to insert values into 
-//' @param new_cols integer vector of column indeces of new_m to insert values into 
-//' @param old_rows integer vector of row indeces of old_m to take values from 
-//' @param old_cols integer vector of column indeces of old_m to take values from 
-//' @return matrix new_m with values from old_m in specified positions 
-//' @keywords internal 
+//' @param new_m matrix to insert values into
+//' @param new_rows integer vector of row indeces of new_m to insert values into
+//' @param new_cols integer vector of column indeces of new_m to insert values into
+//' @param old_rows integer vector of row indeces of old_m to take values from
+//' @param old_cols integer vector of column indeces of old_m to take values from
+//' @return matrix new_m with values from old_m in specified positions
+//' @keywords internal
 // [[Rcpp::export]]
 arma::mat mat_to_mat_insert(arma::mat old_m,
                             arma::mat new_m,
@@ -216,11 +216,11 @@ arma::mat mat_to_mat_insert(arma::mat old_m,
 
 
 //' helper to permute sampling data
-//' 
+//'
 //' @param link_list List holding indices of linked units for each unit
-//' @param wave integer vector holding the sampling wave of each unit 
-//' @param name integer vector holding the name of each unit 
-//' @return vector of integer vectors holding permuted sampling waves 
+//' @param wave integer vector holding the sampling wave of each unit
+//' @param name integer vector holding the name of each unit
+//' @return vector of integer vectors holding permuted sampling waves
 //' @keywords internal
 // [[Rcpp::export]]
 std::vector<std::vector<int>> lt_permute(List link_list,
@@ -269,17 +269,17 @@ std::vector<std::vector<int>> lt_permute(List link_list,
 }
 
 
-//' Link-tracing Gibbs sampler 
+//' Link-tracing Gibbs sampler
 //' @param data DataFrame pass through of sammple data created in get_study_est_linktrace
 //' @param y_samp matrix pass through of adjecency matrix generated in get_study_est_linktrace
-//' @param strata integer stratum id of each unit 
-//' @param n_strata integer number of unique strata 
+//' @param strata integer stratum id of each unit
+//' @param n_strata integer number of unique strata
 //' @param n_waves integer number of sampling waves
-//' @param total integer total size of the population 
-//' @param chain_samples integer number of samples per MCMC chain 
+//' @param total integer total size of the population
+//' @param chain_samples integer number of samples per MCMC chain
 //' @param priors List of priors for n, lambda and beta
 //' @param param_init List of initial values for n,lambda and beta
-//' @return integer vector of samples from the n distribution 
+//' @return integer vector of samples from the n distribution
 //' @keywords internal
 // [[Rcpp::export]]
 std::vector<int> lt_gibbs(DataFrame data,
@@ -352,29 +352,26 @@ std::vector<int> lt_gibbs(DataFrame data,
   std::vector<double> prior_l = priors["p_l"];
   int prior_b = priors["p_b"];
   
+  
+  //get number of units in each strata
+  std::vector<int> data_p_strata = data["strata"];
+  std::vector<int> strata_t;
+  
+  for(int i = 0; i < data_p_waves.size() - 1; i++){
+    std::vector<int> strata_ti;
+    for(int j = 0; j < data_p_waves[i].size(); j ++){
+      strata_ti.push_back(data_p_strata[data_p_waves[i][j] - 1]);
+    }
+    strata_t.insert(strata_t.end(), strata_ti.begin(), strata_ti.end());
+  }
+  std::vector<int> strata_count = table_cpp(strata_t);
+  
   // begin MCMC
   for(int t = 1; t < chain_samples; t++){
     
     //##################
     //# generate new N #
     //##################
-    
-    //get number of units in each strata
-    std::vector<int> data_p_strata = data["strata"];
-    
-    std::vector<int> strata_t;
-    
-    for(int i = 0; i < data_p_waves.size() - 1; i++){
-      std::vector<int> strata_ti;
-      
-      for(int j = 0; j < data_p_waves[i].size(); j ++){
-        strata_ti.push_back(data_p_strata[data_p_waves[i][j] - 1]);
-      }
-      
-      strata_t.insert(strata_t.end(), strata_ti.begin(), strata_ti.end());
-    }
-    
-    std::vector<int> strata_count = table_cpp(strata_t);
     
     //get p(no link between strata)
     std::vector<double> no_link_init(n_strata, 1);

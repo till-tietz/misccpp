@@ -26,6 +26,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// move_elements
+std::vector<int> move_elements(std::vector<int> x, int old_index, int new_index);
+RcppExport SEXP _misccpp_move_elements(SEXP xSEXP, SEXP old_indexSEXP, SEXP new_indexSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<int> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type old_index(old_indexSEXP);
+    Rcpp::traits::input_parameter< int >::type new_index(new_indexSEXP);
+    rcpp_result_gen = Rcpp::wrap(move_elements(x, old_index, new_index));
+    return rcpp_result_gen;
+END_RCPP
+}
 // choose_cpp
 uint64_t choose_cpp(uint64_t n, uint64_t k);
 RcppExport SEXP _misccpp_choose_cpp(SEXP nSEXP, SEXP kSEXP) {
@@ -47,6 +60,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::vector<int> >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     rcpp_result_gen = Rcpp::wrap(combn_cpp(x, K));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rdirichlet_cpp
+std::vector<double> rdirichlet_cpp(std::vector<double> alpha);
+RcppExport SEXP _misccpp_rdirichlet_cpp(SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdirichlet_cpp(alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// table_cpp
+std::vector<int> table_cpp(std::vector<int> x);
+RcppExport SEXP _misccpp_table_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<int> >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(table_cpp(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -99,20 +134,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// int_mat_insert
-IntegerMatrix int_mat_insert(IntegerMatrix m, IntegerVector col, IntegerVector row, IntegerVector vals);
-RcppExport SEXP _misccpp_int_mat_insert(SEXP mSEXP, SEXP colSEXP, SEXP rowSEXP, SEXP valsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerMatrix >::type m(mSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type col(colSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type row(rowSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type vals(valsSEXP);
-    rcpp_result_gen = Rcpp::wrap(int_mat_insert(m, col, row, vals));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mat_to_mat_insert
 arma::mat mat_to_mat_insert(arma::mat old_m, arma::mat new_m, std::vector<int> new_rows, std::vector<int> new_cols, std::vector<int> old_rows, std::vector<int> old_cols);
 RcppExport SEXP _misccpp_mat_to_mat_insert(SEXP old_mSEXP, SEXP new_mSEXP, SEXP new_rowsSEXP, SEXP new_colsSEXP, SEXP old_rowsSEXP, SEXP old_colsSEXP) {
@@ -126,30 +147,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::vector<int> >::type old_rows(old_rowsSEXP);
     Rcpp::traits::input_parameter< std::vector<int> >::type old_cols(old_colsSEXP);
     rcpp_result_gen = Rcpp::wrap(mat_to_mat_insert(old_m, new_m, new_rows, new_cols, old_rows, old_cols));
-    return rcpp_result_gen;
-END_RCPP
-}
-// mat_by_mat
-NumericVector mat_by_mat(NumericMatrix m, IntegerVector row, IntegerVector col);
-RcppExport SEXP _misccpp_mat_by_mat(SEXP mSEXP, SEXP rowSEXP, SEXP colSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type m(mSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type row(rowSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type col(colSEXP);
-    rcpp_result_gen = Rcpp::wrap(mat_by_mat(m, row, col));
-    return rcpp_result_gen;
-END_RCPP
-}
-// m_to_v_double
-std::vector<std::vector<double>> m_to_v_double(NumericMatrix m);
-RcppExport SEXP _misccpp_m_to_v_double(SEXP mSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(m_to_v_double(m));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -167,8 +164,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // lt_gibbs
-List lt_gibbs(DataFrame data, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int chain_burnin, List priors, List param_init);
-RcppExport SEXP _misccpp_lt_gibbs(SEXP dataSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP chain_burninSEXP, SEXP priorsSEXP, SEXP param_initSEXP) {
+std::vector<int> lt_gibbs(DataFrame data, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, List priors, List param_init);
+RcppExport SEXP _misccpp_lt_gibbs(SEXP dataSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP priorsSEXP, SEXP param_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -179,10 +176,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_waves(n_wavesSEXP);
     Rcpp::traits::input_parameter< int >::type total(totalSEXP);
     Rcpp::traits::input_parameter< int >::type chain_samples(chain_samplesSEXP);
-    Rcpp::traits::input_parameter< int >::type chain_burnin(chain_burninSEXP);
     Rcpp::traits::input_parameter< List >::type priors(priorsSEXP);
     Rcpp::traits::input_parameter< List >::type param_init(param_initSEXP);
-    rcpp_result_gen = Rcpp::wrap(lt_gibbs(data, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, priors, param_init));
+    rcpp_result_gen = Rcpp::wrap(lt_gibbs(data, y_samp, strata, n_strata, n_waves, total, chain_samples, priors, param_init));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -276,18 +272,18 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_ergodic_sim", (DL_FUNC) &_misccpp_ergodic_sim, 5},
+    {"_misccpp_move_elements", (DL_FUNC) &_misccpp_move_elements, 3},
     {"_misccpp_choose_cpp", (DL_FUNC) &_misccpp_choose_cpp, 2},
     {"_misccpp_combn_cpp", (DL_FUNC) &_misccpp_combn_cpp, 2},
+    {"_misccpp_rdirichlet_cpp", (DL_FUNC) &_misccpp_rdirichlet_cpp, 1},
+    {"_misccpp_table_cpp", (DL_FUNC) &_misccpp_table_cpp, 1},
     {"_misccpp_rep_times", (DL_FUNC) &_misccpp_rep_times, 2},
     {"_misccpp_rep_each", (DL_FUNC) &_misccpp_rep_each, 2},
     {"_misccpp_gen_range", (DL_FUNC) &_misccpp_gen_range, 2},
     {"_misccpp_int_vec_insert", (DL_FUNC) &_misccpp_int_vec_insert, 3},
-    {"_misccpp_int_mat_insert", (DL_FUNC) &_misccpp_int_mat_insert, 4},
     {"_misccpp_mat_to_mat_insert", (DL_FUNC) &_misccpp_mat_to_mat_insert, 6},
-    {"_misccpp_mat_by_mat", (DL_FUNC) &_misccpp_mat_by_mat, 3},
-    {"_misccpp_m_to_v_double", (DL_FUNC) &_misccpp_m_to_v_double, 1},
     {"_misccpp_lt_permute", (DL_FUNC) &_misccpp_lt_permute, 3},
-    {"_misccpp_lt_gibbs", (DL_FUNC) &_misccpp_lt_gibbs, 10},
+    {"_misccpp_lt_gibbs", (DL_FUNC) &_misccpp_lt_gibbs, 9},
     {"_misccpp_rm_el", (DL_FUNC) &_misccpp_rm_el, 1},
     {"_misccpp_gen_pairs", (DL_FUNC) &_misccpp_gen_pairs, 1},
     {"_misccpp_extract", (DL_FUNC) &_misccpp_extract, 3},
