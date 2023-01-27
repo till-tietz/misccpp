@@ -1,102 +1,69 @@
 #include <Rcpp.h>
+#include <algorithm>
+#include <random>
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-IntegerVector rm_el(IntegerVector input){
-  IntegerVector ret(input.size() - 1);
-  for(int i = 1; i < input.size(); i++){
-    ret[i - 1] = input[i];
-  }
-  return ret;
-}
-
-// [[Rcpp::export]]
-IntegerMatrix gen_pairs(IntegerVector input){
-  Function cseq("seq");
-  IntegerVector v = sample(input, input.size(), false, R_NilValue);
-  
-  if(v.size() % 2 != 0){
-    v = rm_el(v);
+std::vector<std::vector<int>> pareto_sim(int pop_size,
+                                         std::vector<int> mon,
+                                         std::vector<double> prop,
+                                         int iter){  
+  //generate vector of agent indices
+  std::vector<int> pop(pop_size);
+  for(int i = 0; i < pop.size(); ++i){
+    pop[i] = i;
   }
   
-  IntegerVector start = cseq(0, v.size() - 1, 2);
-  
-  IntegerMatrix pairs(start.size(), 2);
-  
-  for(int i = 0; i < start.size(); i++){
-    int start_i = start[i];
-    int end_i = start[i] + 1;
-    
-    int val1 = v[start_i];
-    int val2 = v[end_i];
-    
-    pairs(i,0) = val1;
-    pairs(i,1) = val2;
-  }
-  
-  
-  return pairs;
-  
-}
-
-// [[Rcpp::export]]
-IntegerVector extract(NumericMatrix m, IntegerVector r, int c){
-  IntegerVector ret(r.size());
-  for(int i = 0; i < r.size(); i++){
-    ret[i] = m(i,c);
-  }
-  return ret;
-}
-
-
-// [[Rcpp::export]]
-List pareto_sim(IntegerVector pop, IntegerVector mon, NumericVector prob, int iter){
-
-  Function cwhich("which");
-  
-  List lmoney(iter);
+  //generate vector of vectors to store money of each iteration
+  std::vector<std::vector<int>> lmoney(iter);
   lmoney[0] = mon;
   
-  for(int i = 1; i < iter; i++){
+  //begin simulation
+  for(int i = 1; i < iter; ++i) {
+    lmoney[i] = lmoney[i - 1];
     
-    IntegerVector moneyprev = lmoney[i - 1];
-    IntegerVector money = clone(moneyprev);
-    IntegerVector keepl = cwhich(money > 0);
-    IntegerVector keep = keepl - 1;
-    
-    IntegerVector pop_i(keep.size());
-    
-    for(int r = 0; r < keep.size(); r++){
-      int keepint = keep[r];
-      pop_i[r] = pop[keepint];
-    }
-    
-    IntegerMatrix pairs = gen_pairs(pop_i);
-    
-    for(int j = 0; j < pairs.nrow(); j++){
-      
-      int p1 = pairs(j,0) - 1;
-      int p2 = pairs(j,1) - 1;
-      
-      double prob_j_1 = prob[p1] / (prob[p1] + prob[p2]);
-      double prob_j_2 = prob[p2] / (prob[p1] + prob[p2]);
-      
-      NumericVector win_1 = rbinom(1,1,prob_j_1);  
-      NumericVector win_2 = rbinom(1,1,prob_j_2);
-      
-      if(win_1[0] < win_2[0]){
-        money[p1] = money[p1] - 1;
-        money[p2] = money[p2] + 1;
-      } 
-      
-      if(win_1[0] > win_2[0]){
-        money[p1] = money[p1] + 1;
-        money[p2] = money[p2] - 1;
+    //erase all agents with 0 money
+    //we need a while loop as we are erasing elements of the vector we are iterating over 
+    auto it = pop.begin();
+    while(it != pop.end()){
+      if(lmoney[i - 1][*it] <= 0){
+        pop.erase(it);
+      } else {
+        ++it;
       }
     }
-    lmoney[i] = money;
+    
+    //shuffle vector of agents 
+    //shuffeling gives us random combinations when we pair agents
+    std::random_shuffle(pop.begin(),pop.end());
+    
+    //iterate through agents, form pairs and play coin-toss 
+    for(int a = 0; a < pop.size() - 1; ++a){
+      //start at 0 index, when index a is even take the next element and generate pair
+      if((a % 2) == 0){
+        
+        //relative win probabilities for each agent 
+        //(ensures that win probabilities of pair sum to 1)
+        double prob1 = prop[pop[a]] / (prop[pop[a]] + prop[pop[a + 1]]);
+        double prob2 = prop[pop[a + 1]] / (prop[pop[a]] + prop[pop[a + 1]]);
+        
+        //determine who wins 
+        int win1 = prob1 < (double) std::rand()/RAND_MAX;
+        int win2 = prob2 < (double) std::rand()/RAND_MAX;
+        
+        //allocate money 
+        if(win1 < win2){
+          lmoney[i][pop[a]] = lmoney[i][pop[a]] - 1;
+          lmoney[i][pop[a + 1]] = lmoney[i][pop[a + 1]] + 1;
+        } 
+        
+        if(win1 > win2){
+          lmoney[i][pop[a]] = lmoney[i][pop[a]] + 1;
+          lmoney[i][pop[a + 1]] = lmoney[i][pop[a + 1]] - 1;
+        }
+      }
+    }
   }
-  
   return lmoney;
 }
 
