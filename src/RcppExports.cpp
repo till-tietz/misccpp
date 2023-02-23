@@ -11,6 +11,22 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// ergodic_sim_new
+arma::mat ergodic_sim_new(int agents, int rounds, int money, double win, double loss, double prob);
+RcppExport SEXP _misccpp_ergodic_sim_new(SEXP agentsSEXP, SEXP roundsSEXP, SEXP moneySEXP, SEXP winSEXP, SEXP lossSEXP, SEXP probSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type agents(agentsSEXP);
+    Rcpp::traits::input_parameter< int >::type rounds(roundsSEXP);
+    Rcpp::traits::input_parameter< int >::type money(moneySEXP);
+    Rcpp::traits::input_parameter< double >::type win(winSEXP);
+    Rcpp::traits::input_parameter< double >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< double >::type prob(probSEXP);
+    rcpp_result_gen = Rcpp::wrap(ergodic_sim_new(agents, rounds, money, win, loss, prob));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ergodic_sim
 NumericMatrix ergodic_sim(int agents, int rounds, int money, double win, double loss);
 RcppExport SEXP _misccpp_ergodic_sim(SEXP agentsSEXP, SEXP roundsSEXP, SEXP moneySEXP, SEXP winSEXP, SEXP lossSEXP) {
@@ -163,9 +179,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lt_gibbs
-std::vector<int> lt_gibbs(DataFrame data, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, List priors, List param_init);
-RcppExport SEXP _misccpp_lt_gibbs(SEXP dataSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP priorsSEXP, SEXP param_initSEXP) {
+// lt_gibbs_cpp
+std::vector<int> lt_gibbs_cpp(DataFrame data, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, List priors, List param_init);
+RcppExport SEXP _misccpp_lt_gibbs_cpp(SEXP dataSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP priorsSEXP, SEXP param_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -178,56 +194,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type chain_samples(chain_samplesSEXP);
     Rcpp::traits::input_parameter< List >::type priors(priorsSEXP);
     Rcpp::traits::input_parameter< List >::type param_init(param_initSEXP);
-    rcpp_result_gen = Rcpp::wrap(lt_gibbs(data, y_samp, strata, n_strata, n_waves, total, chain_samples, priors, param_init));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rm_el
-IntegerVector rm_el(IntegerVector input);
-RcppExport SEXP _misccpp_rm_el(SEXP inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(rm_el(input));
-    return rcpp_result_gen;
-END_RCPP
-}
-// gen_pairs
-IntegerMatrix gen_pairs(IntegerVector input);
-RcppExport SEXP _misccpp_gen_pairs(SEXP inputSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
-    rcpp_result_gen = Rcpp::wrap(gen_pairs(input));
-    return rcpp_result_gen;
-END_RCPP
-}
-// extract
-IntegerVector extract(NumericMatrix m, IntegerVector r, int c);
-RcppExport SEXP _misccpp_extract(SEXP mSEXP, SEXP rSEXP, SEXP cSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type m(mSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type r(rSEXP);
-    Rcpp::traits::input_parameter< int >::type c(cSEXP);
-    rcpp_result_gen = Rcpp::wrap(extract(m, r, c));
+    rcpp_result_gen = Rcpp::wrap(lt_gibbs_cpp(data, y_samp, strata, n_strata, n_waves, total, chain_samples, priors, param_init));
     return rcpp_result_gen;
 END_RCPP
 }
 // pareto_sim
-List pareto_sim(IntegerVector pop, IntegerVector mon, NumericVector prob, int iter);
-RcppExport SEXP _misccpp_pareto_sim(SEXP popSEXP, SEXP monSEXP, SEXP probSEXP, SEXP iterSEXP) {
+std::vector<std::vector<int>> pareto_sim(int pop_size, std::vector<int> mon, std::vector<double> prop, int iter);
+RcppExport SEXP _misccpp_pareto_sim(SEXP pop_sizeSEXP, SEXP monSEXP, SEXP propSEXP, SEXP iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type pop(popSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type mon(monSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< int >::type pop_size(pop_sizeSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type mon(monSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type prop(propSEXP);
     Rcpp::traits::input_parameter< int >::type iter(iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(pareto_sim(pop, mon, prob, iter));
+    rcpp_result_gen = Rcpp::wrap(pareto_sim(pop_size, mon, prop, iter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -271,6 +252,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_misccpp_ergodic_sim_new", (DL_FUNC) &_misccpp_ergodic_sim_new, 6},
     {"_misccpp_ergodic_sim", (DL_FUNC) &_misccpp_ergodic_sim, 5},
     {"_misccpp_move_elements", (DL_FUNC) &_misccpp_move_elements, 3},
     {"_misccpp_choose_cpp", (DL_FUNC) &_misccpp_choose_cpp, 2},
@@ -283,10 +265,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_int_vec_insert", (DL_FUNC) &_misccpp_int_vec_insert, 3},
     {"_misccpp_mat_to_mat_insert", (DL_FUNC) &_misccpp_mat_to_mat_insert, 6},
     {"_misccpp_lt_permute", (DL_FUNC) &_misccpp_lt_permute, 3},
-    {"_misccpp_lt_gibbs", (DL_FUNC) &_misccpp_lt_gibbs, 9},
-    {"_misccpp_rm_el", (DL_FUNC) &_misccpp_rm_el, 1},
-    {"_misccpp_gen_pairs", (DL_FUNC) &_misccpp_gen_pairs, 1},
-    {"_misccpp_extract", (DL_FUNC) &_misccpp_extract, 3},
+    {"_misccpp_lt_gibbs_cpp", (DL_FUNC) &_misccpp_lt_gibbs_cpp, 9},
     {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
     {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
     {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 2},
