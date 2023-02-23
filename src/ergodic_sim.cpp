@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-arma::mat ergodic_sim_new(int agents,
+arma::mat ergodic_sim(int agents,
                       int rounds,
                       int money,
                       double win,
