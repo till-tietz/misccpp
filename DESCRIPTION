@@ -14,5 +14,6 @@ Imports:
   stats (>= 4.2.0)
 LinkingTo: 
   Rcpp,
-  RcppArmadillo
+  RcppArmadillo,
+  RcppProgress
 RoxygenNote: 7.2.2
