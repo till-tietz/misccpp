@@ -62,11 +62,3 @@ std::vector<int> write_vec_par(std::vector<int> x, int y, int ncores) {
   }
   return res;
 }
-
-
-// [[Rcpp::export]]
-std::vector<int> mod_par(arma::mat m) {
-  
-}
-
-
