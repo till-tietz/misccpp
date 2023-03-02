@@ -259,7 +259,6 @@ void update_progress_bar(int progress, int total) {
 //' @param n_samples number of samples to draw
 //' @return a vector of vectors with n_samples population size samples
 //' @keywords internal
-// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::export]]
 List lt_gibbs_cpp(std::vector<std::vector<int>> links_list,
                               std::vector<int> wave,
