@@ -68,18 +68,6 @@ NULL
 #' @keywords internal
 NULL
 
-#' helper to do random access insertion of matrix into another matrix
-#'
-#' @param old_m matrix to take values from
-#' @param new_m matrix to insert values into
-#' @param new_rows integer vector of row indeces of new_m to insert values into
-#' @param new_cols integer vector of column indeces of new_m to insert values into
-#' @param old_rows integer vector of row indeces of old_m to take values from
-#' @param old_cols integer vector of column indeces of old_m to take values from
-#' @return matrix new_m with values from old_m in specified positions
-#' @keywords internal
-NULL
-
 #' helper to permute sampling data
 #'
 #' @param link_list List holding indices of linked units for each unit
@@ -87,9 +75,10 @@ NULL
 #' @param name integer vector holding the name of each unit
 #' @return vector of integer vectors holding permuted sampling waves
 #' @keywords internal
-lt_permute <- function(link_list, wave, name) {
-    .Call(`_misccpp_lt_permute`, link_list, wave, name)
-}
+NULL
+
+#' simple progress bar function
+NULL
 
 #' Link-tracing Gibbs sampler
 #' @param links_list list of between unit edges
@@ -101,6 +90,7 @@ lt_permute <- function(link_list, wave, name) {
 #' @param n_waves integer number of sampling waves
 #' @param total integer total size of the population
 #' @param chain_samples integer number of samples per MCMC chain
+#' @param chain_burning integer number of burnin samples per MCMC chain
 #' @param prior_n integer power law prior for population size
 #' @param prior_l double vector of dirichilet priors for stratum membership
 #' @param prior_b integer beta distribution prior for unit links
@@ -108,26 +98,41 @@ lt_permute <- function(link_list, wave, name) {
 #' @param l_0 double vector initial values for l
 #' @param b_0 double matrix initial values for b
 #' @param n_samples number of samples to draw
-#' @param ncores number of cores to use for parallel sampling
 #' @return a vector of vectors with n_samples population size samples
 #' @keywords internal
-lt_gibbs_cpp <- function(links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples, ncores) {
-    .Call(`_misccpp_lt_gibbs_cpp`, links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples, ncores)
+lt_gibbs_cpp <- function(links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples) {
+    .Call(`_misccpp_lt_gibbs_cpp`, links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples)
+}
+
+add_par <- function(n, ncores) {
+    .Call(`_misccpp_add_par`, n, ncores)
+}
+
+add_seq <- function(n) {
+    .Call(`_misccpp_add_seq`, n)
+}
+
+write_vec_par <- function(x, y, ncores) {
+    .Call(`_misccpp_write_vec_par`, x, y, ncores)
+}
+
+mod_par <- function(m) {
+    .Call(`_misccpp_mod_par`, m)
 }
 
 pareto_sim <- function(pop_size, mon, prop, iter) {
     .Call(`_misccpp_pareto_sim`, pop_size, mon, prop, iter)
 }
 
-assign_cluster <- function(points, centroids) {
-    .Call(`_misccpp_assign_cluster`, points, centroids)
+assign_cluster_new <- function(points, centroids) {
+    .Call(`_misccpp_assign_cluster_new`, points, centroids)
 }
 
-new_centroid <- function(points, assigned_c) {
-    .Call(`_misccpp_new_centroid`, points, assigned_c)
+new_centroid_new <- function(points, assigned_cluster, centroids) {
+    .Call(`_misccpp_new_centroid_new`, points, assigned_cluster, centroids)
 }
 
-kmean <- function(points, centroids, k, max_iter) {
-    .Call(`_misccpp_kmean`, points, centroids, k, max_iter)
+kmean <- function(points, centroids, max_iter) {
+    .Call(`_misccpp_kmean`, points, centroids, max_iter)
 }
 

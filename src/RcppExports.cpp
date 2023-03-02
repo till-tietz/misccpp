@@ -27,22 +27,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lt_permute
-std::vector<std::vector<int>> lt_permute(std::vector<std::vector<int>>& link_list, std::vector<int> wave, std::vector<int> name);
-RcppExport SEXP _misccpp_lt_permute(SEXP link_listSEXP, SEXP waveSEXP, SEXP nameSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<std::vector<int>>& >::type link_list(link_listSEXP);
-    Rcpp::traits::input_parameter< std::vector<int> >::type wave(waveSEXP);
-    Rcpp::traits::input_parameter< std::vector<int> >::type name(nameSEXP);
-    rcpp_result_gen = Rcpp::wrap(lt_permute(link_list, wave, name));
-    return rcpp_result_gen;
-END_RCPP
-}
 // lt_gibbs_cpp
-std::vector<std::vector<int>> lt_gibbs_cpp(std::vector<std::vector<int>> links_list, std::vector<int> wave, std::vector<int> name, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int prior_n, std::vector<double> prior_l, int prior_b, int n_0, std::vector<double> l_0, arma::mat b_0, int n_samples, int ncores);
-RcppExport SEXP _misccpp_lt_gibbs_cpp(SEXP links_listSEXP, SEXP waveSEXP, SEXP nameSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP prior_nSEXP, SEXP prior_lSEXP, SEXP prior_bSEXP, SEXP n_0SEXP, SEXP l_0SEXP, SEXP b_0SEXP, SEXP n_samplesSEXP, SEXP ncoresSEXP) {
+List lt_gibbs_cpp(std::vector<std::vector<int>> links_list, std::vector<int> wave, std::vector<int> name, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int chain_burnin, int prior_n, std::vector<double> prior_l, int prior_b, int n_0, std::vector<double> l_0, arma::mat b_0, int n_samples);
+RcppExport SEXP _misccpp_lt_gibbs_cpp(SEXP links_listSEXP, SEXP waveSEXP, SEXP nameSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP chain_burninSEXP, SEXP prior_nSEXP, SEXP prior_lSEXP, SEXP prior_bSEXP, SEXP n_0SEXP, SEXP l_0SEXP, SEXP b_0SEXP, SEXP n_samplesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,6 +42,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_waves(n_wavesSEXP);
     Rcpp::traits::input_parameter< int >::type total(totalSEXP);
     Rcpp::traits::input_parameter< int >::type chain_samples(chain_samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type chain_burnin(chain_burninSEXP);
     Rcpp::traits::input_parameter< int >::type prior_n(prior_nSEXP);
     Rcpp::traits::input_parameter< std::vector<double> >::type prior_l(prior_lSEXP);
     Rcpp::traits::input_parameter< int >::type prior_b(prior_bSEXP);
@@ -62,8 +50,54 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::vector<double> >::type l_0(l_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type b_0(b_0SEXP);
     Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(lt_gibbs_cpp(links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, chain_burnin, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples));
+    return rcpp_result_gen;
+END_RCPP
+}
+// add_par
+int add_par(int n, int ncores);
+RcppExport SEXP _misccpp_add_par(SEXP nSEXP, SEXP ncoresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type ncores(ncoresSEXP);
-    rcpp_result_gen = Rcpp::wrap(lt_gibbs_cpp(links_list, wave, name, y_samp, strata, n_strata, n_waves, total, chain_samples, prior_n, prior_l, prior_b, n_0, l_0, b_0, n_samples, ncores));
+    rcpp_result_gen = Rcpp::wrap(add_par(n, ncores));
+    return rcpp_result_gen;
+END_RCPP
+}
+// add_seq
+int add_seq(int n);
+RcppExport SEXP _misccpp_add_seq(SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(add_seq(n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// write_vec_par
+std::vector<int> write_vec_par(std::vector<int> x, int y, int ncores);
+RcppExport SEXP _misccpp_write_vec_par(SEXP xSEXP, SEXP ySEXP, SEXP ncoresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<int> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type ncores(ncoresSEXP);
+    rcpp_result_gen = Rcpp::wrap(write_vec_par(x, y, ncores));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mod_par
+std::vector<int> mod_par(arma::mat m);
+RcppExport SEXP _misccpp_mod_par(SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(mod_par(m));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -81,53 +115,56 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// assign_cluster
-List assign_cluster(NumericMatrix points, NumericMatrix centroids);
-RcppExport SEXP _misccpp_assign_cluster(SEXP pointsSEXP, SEXP centroidsSEXP) {
+// assign_cluster_new
+std::vector<int> assign_cluster_new(arma::mat points, arma::mat centroids);
+RcppExport SEXP _misccpp_assign_cluster_new(SEXP pointsSEXP, SEXP centroidsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type centroids(centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(assign_cluster(points, centroids));
+    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
+    rcpp_result_gen = Rcpp::wrap(assign_cluster_new(points, centroids));
     return rcpp_result_gen;
 END_RCPP
 }
-// new_centroid
-NumericMatrix new_centroid(NumericMatrix points, IntegerVector assigned_c);
-RcppExport SEXP _misccpp_new_centroid(SEXP pointsSEXP, SEXP assigned_cSEXP) {
+// new_centroid_new
+arma::mat new_centroid_new(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids);
+RcppExport SEXP _misccpp_new_centroid_new(SEXP pointsSEXP, SEXP assigned_clusterSEXP, SEXP centroidsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type assigned_c(assigned_cSEXP);
-    rcpp_result_gen = Rcpp::wrap(new_centroid(points, assigned_c));
+    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type assigned_cluster(assigned_clusterSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
+    rcpp_result_gen = Rcpp::wrap(new_centroid_new(points, assigned_cluster, centroids));
     return rcpp_result_gen;
 END_RCPP
 }
 // kmean
-List kmean(NumericMatrix points, NumericMatrix centroids, int k, int max_iter);
-RcppExport SEXP _misccpp_kmean(SEXP pointsSEXP, SEXP centroidsSEXP, SEXP kSEXP, SEXP max_iterSEXP) {
+List kmean(arma::mat points, arma::mat centroids, int max_iter);
+RcppExport SEXP _misccpp_kmean(SEXP pointsSEXP, SEXP centroidsSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type centroids(centroidsSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(kmean(points, centroids, k, max_iter));
+    rcpp_result_gen = Rcpp::wrap(kmean(points, centroids, max_iter));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_ergodic_sim", (DL_FUNC) &_misccpp_ergodic_sim, 6},
-    {"_misccpp_lt_permute", (DL_FUNC) &_misccpp_lt_permute, 3},
     {"_misccpp_lt_gibbs_cpp", (DL_FUNC) &_misccpp_lt_gibbs_cpp, 17},
+    {"_misccpp_add_par", (DL_FUNC) &_misccpp_add_par, 2},
+    {"_misccpp_add_seq", (DL_FUNC) &_misccpp_add_seq, 1},
+    {"_misccpp_write_vec_par", (DL_FUNC) &_misccpp_write_vec_par, 3},
+    {"_misccpp_mod_par", (DL_FUNC) &_misccpp_mod_par, 1},
     {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
-    {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
-    {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 2},
-    {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 4},
+    {"_misccpp_assign_cluster_new", (DL_FUNC) &_misccpp_assign_cluster_new, 2},
+    {"_misccpp_new_centroid_new", (DL_FUNC) &_misccpp_new_centroid_new, 3},
+    {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 3},
     {NULL, NULL, 0}
 };
 

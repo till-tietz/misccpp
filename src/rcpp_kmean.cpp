@@ -1,124 +1,113 @@
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
+#include <vector>
+#include <math.h>
+#include <stdio.h>
 using namespace Rcpp;
 
-
+// function to assign clusters to points 
 // [[Rcpp::export]]
-
-List assign_cluster(NumericMatrix points, NumericMatrix centroids){
-  int n_points = points.rows();
-  int k = centroids.nrow();
+std::vector<int> assign_cluster_new(arma::mat points, arma::mat centroids) {
   
-  IntegerVector assigned_c (n_points);
-  NumericVector distance_c (n_points);
+  int n_dim = points.n_cols;
+  int n_centroids = centroids.n_rows;
+  int n_points = points.n_rows;
   
-  for(int i = 0; i < n_points; i++){
-    NumericVector d (k);
-    NumericVector p_i = points(i,_);
-    
-    for(int j = 0; j < k; j++){
-      NumericVector c_j = centroids(j,_);
-      NumericVector dif = p_i - c_j;
-      NumericVector sq = dif * dif;
-      double s = sum(sq);
-      double ed = sqrt(s);
-      d[j] = ed;
+  std::vector<int> cluster;
+  cluster.reserve(n_points);
+  std::vector<int> dist(n_centroids);
+  
+  for(int i = 0; i < n_points; ++i) {
+    for(int j = 0; j < n_centroids; ++j) {
+      double sum_dist = 0.0;
+      for(int k = 0; k < n_dim; ++k) {
+        sum_dist += std::pow((points(i,k) - centroids(j,k)), 2);
+      }
+      dist[j] = sum_dist;
     }
-    
-    double min_d = min(d);
-    distance_c[i] = min_d;
-    
-    int centroid_i = which_min(d);
-    assigned_c[i] = centroid_i;
-    
+    auto min_pos = std::min_element(std::begin(dist), std::end(dist));
+    cluster.push_back(min_pos - dist.begin());
+  }
+  return cluster;
+}
+
+// helper to find indices of all occurrences of target in vector 
+std::vector<int> find_item(std::vector<int> const &vec, int target) {
+  std::vector<int> indices;
+  
+  for (int i = 0; i < vec.size(); ++i) {
+    if (vec[i] == target) {
+      indices.push_back(i);
+    }
   }
   
-  double sum_distance = sum(distance_c);
-  List out = List::create(assigned_c,sum_distance);
+  return indices;
+}
+
+// function to compute new centroids for clusters 
+// [[Rcpp::export]]
+arma::mat new_centroid_new(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids) {
   
-  return out;
+  //number of dimensions
+  int n_dim = points.n_cols;
+  
+  //get unique clusters 
+  std::vector<int>::iterator it;
+  std::vector<int> clusters = assigned_cluster;
+  std::sort(clusters.begin(), clusters.end());
+  it = std::unique(clusters.begin(), clusters.end());
+  clusters.resize(std::distance(clusters.begin(), it));
+  
+  for(int i = 0; i < clusters.size(); ++i) {
+    //find indices of points assinged to cluster 
+    int cluster = clusters[i];
+    std::vector<int> indices = find_item(assigned_cluster, cluster);
+    //sum coordinates of each point in cluster
+    std::vector<double> coords(n_dim,0.0);
+    for(int j = 0; j < indices.size(); ++j) {
+      for(int k = 0; k < n_dim; ++k) {
+        coords[k] += points(indices[j],k);
+      }
+    }
+    //compute average of point coordinates in cluster 
+    int n_points_clust = indices.size();
+    for(int j = 0; j < n_dim; ++j) {
+      coords[j] = coords[j] / n_points_clust;
+    }
+    
+    centroids.row(clusters[i]) = arma::rowvec(coords);
+  }
+  return centroids;
 }
 
 // [[Rcpp::export]]
-
-NumericMatrix new_centroid(NumericMatrix points,IntegerVector assigned_c){
-  Function cwhich("which");
-  Function cnaomit("na.omit");
-  IntegerVector c = unique(assigned_c);
-  int dim = points.cols();
-  int kn = c.length();
+List kmean(arma::mat points, arma::mat centroids, int max_iter) {
   
-  NumericMatrix c_new(kn,dim);
+  std::vector<int> cluster = assign_cluster_new(points, centroids);
   
-  for(int i = 0; i < kn; i++){
-    int c_i = c[i];
-    LogicalVector pcl_i = assigned_c == c_i;
-    IntegerVector pc_i = cwhich(pcl_i);
-    
-    int nres = pc_i.length() - 1;
-    NumericMatrix pcp(nres,dim);
-    
-    for(int j = 0; j < nres; j++){
-      int pc_j = pc_i[j];
-      NumericVector pj = points(pc_j,_);
-      pcp(j,_) = pj;
-    }
-    
-    NumericVector md(dim);
-    
-    for(int l = 0; l < dim; l++){
-      NumericVector pcp_l = pcp(_,l);
-      md[l] = mean(pcp_l);
-    }
-    
-    c_new(i,_) = md;
-    
-  }
-  
-  NumericMatrix c_out = cnaomit(c_new);
-  return c_out;
-}
-
-// [[Rcpp::export]]
-
-List kmean(NumericMatrix points, NumericMatrix centroids, int k, int max_iter){
-  List init = assign_cluster(points, centroids);
-  
-  NumericVector error(max_iter);
-  double error_init = init[1];
-  error[0] = error_init;
-  
-  List assign(max_iter);
-  assign[0] = init[0];
-  
-  List cs(max_iter);
-  cs[0] = centroids;
-  
+  int iter = 0;
   bool run = true;
-  int i = 1;
-  max_iter = max_iter - 1;
   
-  while(run){
-    int prev = i - 1;
-    NumericMatrix centroid_i = new_centroid(points, assign[prev]);
+  while(run) {
+    iter += 1;
+    centroids = new_centroid_new(points, cluster, centroids);
+    std::vector<int> cluster_new = assign_cluster_new(points, centroids);
     
-    List cluster_i = assign_cluster(points, centroid_i);
-    double error_i = cluster_i[1];
+    bool cluster_change;
+    for(int i = 0; i < cluster.size(); ++i) {
+      cluster_change = cluster_new[i] != cluster[i];
+      if(cluster_change) {
+        break;
+      }
+    }
     
-    if(error_i >= error[prev]){
+    cluster = cluster_new;
+    
+    if((iter == max_iter) || (!cluster_change)) {
       run = false;
-    };
-    
-    if(max_iter == i){
-      run = false;
-    };
-    
-    assign[i] = cluster_i[0];
-    cs[i] = centroid_i;
-    error[i] = error_i;
-    
-    i++;
+    }
   }
-  
-  List out = List::create(Named("error") = error, _["cluster_assign"] = assign, _["cluster_coord"] = cs);
+  List out = List::create(Named("cluster_assign") = cluster, _["cluster_coord"] = centroids);
   return out;
 }
+
+

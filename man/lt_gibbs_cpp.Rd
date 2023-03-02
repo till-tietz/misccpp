@@ -14,14 +14,14 @@ lt_gibbs_cpp(
   n_waves,
   total,
   chain_samples,
+  chain_burnin,
   prior_n,
   prior_l,
   prior_b,
   n_0,
   l_0,
   b_0,
-  n_samples,
-  ncores
+  n_samples
 )
 }
 \arguments{
@@ -57,7 +57,7 @@ lt_gibbs_cpp(
 
 \item{n_samples}{number of samples to draw}
 
-\item{ncores}{number of cores to use for parallel sampling}
+\item{chain_burning}{integer number of burnin samples per MCMC chain}
 }
 \value{
 a vector of vectors with n_samples population size samples
