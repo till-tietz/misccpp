@@ -571,7 +571,7 @@ List lt_gibbs_cpp(std::vector<std::vector<int>> links_list,
     n_out[samps] = n_sum / (chain_samples - chain_burnin);
     // calculate mean lambda
     l = l.submat(chain_burnin,0,chain_samples - 1, n_strata - 1);
-    l_out.row(samps) = mean(l,0);
+    l_out.row(samps) = arma::mean(l,0);
   }
   List out = List::create(Named("N") = n_out , _["L"] = l_out);
   return out;
