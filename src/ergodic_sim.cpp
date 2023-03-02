@@ -4,6 +4,14 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
+//' ergodic process simulator
+//' @param agents integer specifying the number of agents 
+//' @param rounds integer specifying the number of rounds
+//' @param money integer specifying initial money for agents 
+//' @param win double specifying multiplier for money given a win (should be strictly positive)
+//' @param loss double specifying multiplier for money given a loss (should be strictly positive)
+//' @param prob double specifying probability of a win 
+//' @return a matrix of agent money per round where rows are rounds and columns are agents 
 // [[Rcpp::export]]
 arma::mat ergodic_sim(int agents,
                       int rounds,

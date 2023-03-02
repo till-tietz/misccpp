@@ -3,6 +3,12 @@
 #include <random>
 using namespace Rcpp;
 
+//' pareto process simulator 
+//' @param pop_size integer specifying the number of agents
+//' @param mon integer vector specifying initial money for each agent
+//' @param prop double vector specifying the win probability for each agent 
+//' @param iter integer specifying the number of iterations to run 
+//' @return a list of agent money vectors 
 // [[Rcpp::export]]
 std::vector<std::vector<int>> pareto_sim(int pop_size,
                                          std::vector<int> mon,

@@ -5,7 +5,6 @@
 using namespace Rcpp;
 
 // function to assign clusters to points 
-// [[Rcpp::export]]
 std::vector<int> assign_cluster(arma::mat points, arma::mat centroids) {
   
   int n_dim = points.n_cols;
@@ -14,6 +13,7 @@ std::vector<int> assign_cluster(arma::mat points, arma::mat centroids) {
   
   std::vector<int> cluster;
   cluster.reserve(n_points);
+  
   std::vector<int> dist(n_centroids);
   
   for(int i = 0; i < n_points; ++i) {
@@ -30,6 +30,9 @@ std::vector<int> assign_cluster(arma::mat points, arma::mat centroids) {
   return cluster;
 }
 
+
+
+
 // helper to find indices of all occurrences of target in vector 
 std::vector<int> find_item(std::vector<int> const &vec, int target) {
   std::vector<int> indices;
@@ -43,8 +46,10 @@ std::vector<int> find_item(std::vector<int> const &vec, int target) {
   return indices;
 }
 
+
+
+
 // function to compute new centroids for clusters 
-// [[Rcpp::export]]
 arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids) {
   
   //number of dimensions
@@ -79,11 +84,41 @@ arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma
   return centroids;
 }
 
+
+
+
+//' kmean 
+//' @param points a matrix where rows are individual points and columns are their coordinates 
+//' @param k integer specifying the number of clusters to search for 
+//' @param max_iter integer specifying the maximum number of iterations to run the algorithm for 
+//' @return a list with an integer vector specifying the cluster assignment of points and a matrix with centroid point coordinates for each cluster
 // [[Rcpp::export]]
-List kmean(arma::mat points, arma::mat centroids, int max_iter) {
+List kmean(arma::mat points, int k, int max_iter) {
   
+  int n_dim = points.n_cols;
+  //get ranges of points  
+  std::vector<double> col_min = arma::conv_to<std::vector<double>>::from(arma::min(points, 0));
+  std::vector<double> col_max = arma::conv_to<std::vector<double>>::from(arma::max(points, 0));
+  //make centroid matrix
+  arma::mat centroids(k,n_dim);
+  //set random number generator
+  std::mt19937 engine;
+  //generate random centroids
+  for(int i = 0; i < n_dim; ++i) {
+    std::uniform_real_distribution<double> distr(col_min[i], col_max[i]);
+    std::vector<double> coords;
+    coords.reserve(k);
+    
+    for(int j = 0; j < k; ++j) {
+      coords.push_back(distr(engine));
+    }
+    
+    centroids.col(i) = arma::vec(coords);
+  }
+  
+  //assign initial clusters
   std::vector<int> cluster = assign_cluster(points, centroids);
-  
+  //run algorithm
   int iter = 0;
   bool run = true;
   

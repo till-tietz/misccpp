@@ -27,6 +27,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kmean
+List kmean(arma::mat points, int k, int max_iter);
+RcppExport SEXP _misccpp_kmean(SEXP pointsSEXP, SEXP kSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmean(points, k, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lt_gibbs_cpp
 Rcpp::List lt_gibbs_cpp(std::vector<std::vector<int>> links_list, std::vector<int> wave, std::vector<int> name, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int chain_burnin, int prior_n, std::vector<double> prior_l, int prior_b, int n_0, std::vector<double> l_0, arma::mat b_0, int n_samples);
 RcppExport SEXP _misccpp_lt_gibbs_cpp(SEXP links_listSEXP, SEXP waveSEXP, SEXP nameSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP chain_burninSEXP, SEXP prior_nSEXP, SEXP prior_lSEXP, SEXP prior_bSEXP, SEXP n_0SEXP, SEXP l_0SEXP, SEXP b_0SEXP, SEXP n_samplesSEXP) {
@@ -104,55 +117,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// assign_cluster
-std::vector<int> assign_cluster(arma::mat points, arma::mat centroids);
-RcppExport SEXP _misccpp_assign_cluster(SEXP pointsSEXP, SEXP centroidsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(assign_cluster(points, centroids));
-    return rcpp_result_gen;
-END_RCPP
-}
-// new_centroid
-arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids);
-RcppExport SEXP _misccpp_new_centroid(SEXP pointsSEXP, SEXP assigned_clusterSEXP, SEXP centroidsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< std::vector<int> >::type assigned_cluster(assigned_clusterSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(new_centroid(points, assigned_cluster, centroids));
-    return rcpp_result_gen;
-END_RCPP
-}
-// kmean
-List kmean(arma::mat points, arma::mat centroids, int max_iter);
-RcppExport SEXP _misccpp_kmean(SEXP pointsSEXP, SEXP centroidsSEXP, SEXP max_iterSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(kmean(points, centroids, max_iter));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_ergodic_sim", (DL_FUNC) &_misccpp_ergodic_sim, 6},
+    {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 3},
     {"_misccpp_lt_gibbs_cpp", (DL_FUNC) &_misccpp_lt_gibbs_cpp, 17},
     {"_misccpp_add_par", (DL_FUNC) &_misccpp_add_par, 2},
     {"_misccpp_add_seq", (DL_FUNC) &_misccpp_add_seq, 1},
     {"_misccpp_write_vec_par", (DL_FUNC) &_misccpp_write_vec_par, 3},
     {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
-    {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
-    {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 3},
-    {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 3},
     {NULL, NULL, 0}
 };
 
