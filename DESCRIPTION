@@ -9,12 +9,10 @@ Description: Experimental implementations of some algorithms using Rcpp
 License: GPL (>= 2)
 Imports: 
   Rcpp (>= 1.0.7),
-  RcppProgress (>= 0.4.2),
   randcorr (>= 1.0),
   MASS (>= 7.3-54),
   stats (>= 4.2.0)
 LinkingTo: 
   Rcpp,
-  RcppArmadillo,
-  RcppProgress
+  RcppArmadillo
 RoxygenNote: 7.2.2
