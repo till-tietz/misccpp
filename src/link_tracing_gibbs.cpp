@@ -1,8 +1,6 @@
 #include <RcppArmadillo.h>
-#include <unistd.h>
 #include <vector>
 #include <iostream>
-#include <chrono>
 #include <string>
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
