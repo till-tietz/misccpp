@@ -120,12 +120,12 @@ pareto_sim <- function(pop_size, mon, prop, iter) {
     .Call(`_misccpp_pareto_sim`, pop_size, mon, prop, iter)
 }
 
-assign_cluster_new <- function(points, centroids) {
-    .Call(`_misccpp_assign_cluster_new`, points, centroids)
+assign_cluster <- function(points, centroids) {
+    .Call(`_misccpp_assign_cluster`, points, centroids)
 }
 
-new_centroid_new <- function(points, assigned_cluster, centroids) {
-    .Call(`_misccpp_new_centroid_new`, points, assigned_cluster, centroids)
+new_centroid <- function(points, assigned_cluster, centroids) {
+    .Call(`_misccpp_new_centroid`, points, assigned_cluster, centroids)
 }
 
 kmean <- function(points, centroids, max_iter) {

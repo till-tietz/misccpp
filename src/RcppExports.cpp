@@ -104,28 +104,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// assign_cluster_new
-std::vector<int> assign_cluster_new(arma::mat points, arma::mat centroids);
-RcppExport SEXP _misccpp_assign_cluster_new(SEXP pointsSEXP, SEXP centroidsSEXP) {
+// assign_cluster
+std::vector<int> assign_cluster(arma::mat points, arma::mat centroids);
+RcppExport SEXP _misccpp_assign_cluster(SEXP pointsSEXP, SEXP centroidsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(assign_cluster_new(points, centroids));
+    rcpp_result_gen = Rcpp::wrap(assign_cluster(points, centroids));
     return rcpp_result_gen;
 END_RCPP
 }
-// new_centroid_new
-arma::mat new_centroid_new(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids);
-RcppExport SEXP _misccpp_new_centroid_new(SEXP pointsSEXP, SEXP assigned_clusterSEXP, SEXP centroidsSEXP) {
+// new_centroid
+arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids);
+RcppExport SEXP _misccpp_new_centroid(SEXP pointsSEXP, SEXP assigned_clusterSEXP, SEXP centroidsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type points(pointsSEXP);
     Rcpp::traits::input_parameter< std::vector<int> >::type assigned_cluster(assigned_clusterSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type centroids(centroidsSEXP);
-    rcpp_result_gen = Rcpp::wrap(new_centroid_new(points, assigned_cluster, centroids));
+    rcpp_result_gen = Rcpp::wrap(new_centroid(points, assigned_cluster, centroids));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -150,8 +150,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_add_seq", (DL_FUNC) &_misccpp_add_seq, 1},
     {"_misccpp_write_vec_par", (DL_FUNC) &_misccpp_write_vec_par, 3},
     {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
-    {"_misccpp_assign_cluster_new", (DL_FUNC) &_misccpp_assign_cluster_new, 2},
-    {"_misccpp_new_centroid_new", (DL_FUNC) &_misccpp_new_centroid_new, 3},
+    {"_misccpp_assign_cluster", (DL_FUNC) &_misccpp_assign_cluster, 2},
+    {"_misccpp_new_centroid", (DL_FUNC) &_misccpp_new_centroid, 3},
     {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 3},
     {NULL, NULL, 0}
 };
