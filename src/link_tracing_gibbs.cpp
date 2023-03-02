@@ -4,7 +4,7 @@
 #include <string>
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
-using namesapce std;
+using namespace std;
 
 //' cpp helper to move vector elements to new indices
 //'
