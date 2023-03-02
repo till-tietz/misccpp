@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // function to assign clusters to points 
-std::vector<int> assign_cluster(arma::mat points, arma::mat centroids) {
+std::vector<int> assign_cluster(const arma::mat& points, const arma::mat& centroids) {
   
   int n_dim = points.n_cols;
   int n_centroids = centroids.n_rows;
@@ -34,7 +34,7 @@ std::vector<int> assign_cluster(arma::mat points, arma::mat centroids) {
 
 
 // helper to find indices of all occurrences of target in vector 
-std::vector<int> find_item(std::vector<int> const &vec, int target) {
+std::vector<int> find_item(const std::vector<int>& vec, int target) {
   std::vector<int> indices;
   
   for (int i = 0; i < vec.size(); ++i) {
@@ -50,7 +50,7 @@ std::vector<int> find_item(std::vector<int> const &vec, int target) {
 
 
 // function to compute new centroids for clusters 
-arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma::mat centroids) {
+void new_centroid(const arma::mat& points, const std::vector<int>& assigned_cluster, arma::mat& centroids) {
   
   //number of dimensions
   int n_dim = points.n_cols;
@@ -81,7 +81,7 @@ arma::mat new_centroid(arma::mat points, std::vector<int> assigned_cluster, arma
     
     centroids.row(clusters[i]) = arma::rowvec(coords);
   }
-  return centroids;
+  return;
 }
 
 
@@ -124,7 +124,7 @@ List kmean(arma::mat points, int k, int max_iter) {
   
   while(run) {
     iter += 1;
-    centroids = new_centroid(points, cluster, centroids);
+    new_centroid(points, cluster, centroids);
     std::vector<int> cluster_new = assign_cluster(points, centroids);
     
     bool cluster_change;
