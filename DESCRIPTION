@@ -7,8 +7,9 @@ Author: Till Tietz
 Maintainer: Till Tietz <ttietz2014@gmail.com>
 Description: Experimental implementations of some algorithms using Rcpp
 License: GPL (>= 2)
+Depends:
+  Rcpp (>= 1.0.7)
 Imports: 
-  Rcpp (>= 1.0.7),
   randcorr (>= 1.0),
   MASS (>= 7.3-54),
   stats (>= 4.2.0)

@@ -28,7 +28,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // lt_gibbs_cpp
-List lt_gibbs_cpp(std::vector<std::vector<int>> links_list, std::vector<int> wave, std::vector<int> name, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int chain_burnin, int prior_n, std::vector<double> prior_l, int prior_b, int n_0, std::vector<double> l_0, arma::mat b_0, int n_samples);
+Rcpp::List lt_gibbs_cpp(std::vector<std::vector<int>> links_list, std::vector<int> wave, std::vector<int> name, arma::mat y_samp, std::vector<int> strata, int n_strata, int n_waves, int total, int chain_samples, int chain_burnin, int prior_n, std::vector<double> prior_l, int prior_b, int n_0, std::vector<double> l_0, arma::mat b_0, int n_samples);
 RcppExport SEXP _misccpp_lt_gibbs_cpp(SEXP links_listSEXP, SEXP waveSEXP, SEXP nameSEXP, SEXP y_sampSEXP, SEXP strataSEXP, SEXP n_strataSEXP, SEXP n_wavesSEXP, SEXP totalSEXP, SEXP chain_samplesSEXP, SEXP chain_burninSEXP, SEXP prior_nSEXP, SEXP prior_lSEXP, SEXP prior_bSEXP, SEXP n_0SEXP, SEXP l_0SEXP, SEXP b_0SEXP, SEXP n_samplesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -87,17 +87,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type y(ySEXP);
     Rcpp::traits::input_parameter< int >::type ncores(ncoresSEXP);
     rcpp_result_gen = Rcpp::wrap(write_vec_par(x, y, ncores));
-    return rcpp_result_gen;
-END_RCPP
-}
-// mod_par
-std::vector<int> mod_par(arma::mat m);
-RcppExport SEXP _misccpp_mod_par(SEXP mSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(mod_par(m));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -160,7 +149,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_add_par", (DL_FUNC) &_misccpp_add_par, 2},
     {"_misccpp_add_seq", (DL_FUNC) &_misccpp_add_seq, 1},
     {"_misccpp_write_vec_par", (DL_FUNC) &_misccpp_write_vec_par, 3},
-    {"_misccpp_mod_par", (DL_FUNC) &_misccpp_mod_par, 1},
     {"_misccpp_pareto_sim", (DL_FUNC) &_misccpp_pareto_sim, 4},
     {"_misccpp_assign_cluster_new", (DL_FUNC) &_misccpp_assign_cluster_new, 2},
     {"_misccpp_new_centroid_new", (DL_FUNC) &_misccpp_new_centroid_new, 3},

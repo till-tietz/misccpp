@@ -116,10 +116,6 @@ write_vec_par <- function(x, y, ncores) {
     .Call(`_misccpp_write_vec_par`, x, y, ncores)
 }
 
-mod_par <- function(m) {
-    .Call(`_misccpp_mod_par`, m)
-}
-
 pareto_sim <- function(pop_size, mon, prop, iter) {
     .Call(`_misccpp_pareto_sim`, pop_size, mon, prop, iter)
 }
