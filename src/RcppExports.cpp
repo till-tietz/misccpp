@@ -12,18 +12,35 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // ergodic_sim
-arma::mat ergodic_sim(int agents, int rounds, int money, double win, double loss, double prob);
+Rcpp::List ergodic_sim(const int& agents, const int& rounds, const double& money, const double& win, const double& loss, const double& prob);
 RcppExport SEXP _misccpp_ergodic_sim(SEXP agentsSEXP, SEXP roundsSEXP, SEXP moneySEXP, SEXP winSEXP, SEXP lossSEXP, SEXP probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type agents(agentsSEXP);
-    Rcpp::traits::input_parameter< int >::type rounds(roundsSEXP);
-    Rcpp::traits::input_parameter< int >::type money(moneySEXP);
-    Rcpp::traits::input_parameter< double >::type win(winSEXP);
-    Rcpp::traits::input_parameter< double >::type loss(lossSEXP);
-    Rcpp::traits::input_parameter< double >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const int& >::type agents(agentsSEXP);
+    Rcpp::traits::input_parameter< const int& >::type rounds(roundsSEXP);
+    Rcpp::traits::input_parameter< const double& >::type money(moneySEXP);
+    Rcpp::traits::input_parameter< const double& >::type win(winSEXP);
+    Rcpp::traits::input_parameter< const double& >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< const double& >::type prob(probSEXP);
     rcpp_result_gen = Rcpp::wrap(ergodic_sim(agents, rounds, money, win, loss, prob));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ruin_sim
+Rcpp::List ruin_sim(const int& n_runs, const double& money_start, const double& money_end, const double& p_win, const double& risk_adjust, const bool& adaptive, const std::vector<int>& prior_p_win);
+RcppExport SEXP _misccpp_ruin_sim(SEXP n_runsSEXP, SEXP money_startSEXP, SEXP money_endSEXP, SEXP p_winSEXP, SEXP risk_adjustSEXP, SEXP adaptiveSEXP, SEXP prior_p_winSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type n_runs(n_runsSEXP);
+    Rcpp::traits::input_parameter< const double& >::type money_start(money_startSEXP);
+    Rcpp::traits::input_parameter< const double& >::type money_end(money_endSEXP);
+    Rcpp::traits::input_parameter< const double& >::type p_win(p_winSEXP);
+    Rcpp::traits::input_parameter< const double& >::type risk_adjust(risk_adjustSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type adaptive(adaptiveSEXP);
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type prior_p_win(prior_p_winSEXP);
+    rcpp_result_gen = Rcpp::wrap(ruin_sim(n_runs, money_start, money_end, p_win, risk_adjust, adaptive, prior_p_win));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -121,6 +138,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_misccpp_ergodic_sim", (DL_FUNC) &_misccpp_ergodic_sim, 6},
+    {"_misccpp_ruin_sim", (DL_FUNC) &_misccpp_ruin_sim, 7},
     {"_misccpp_kmean", (DL_FUNC) &_misccpp_kmean, 3},
     {"_misccpp_lt_gibbs_cpp", (DL_FUNC) &_misccpp_lt_gibbs_cpp, 18},
     {"_misccpp_add_par", (DL_FUNC) &_misccpp_add_par, 2},

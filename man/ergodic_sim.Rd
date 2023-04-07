@@ -11,7 +11,7 @@ ergodic_sim(agents, rounds, money, win, loss, prob)
 
 \item{rounds}{integer specifying the number of rounds}
 
-\item{money}{integer specifying initial money for agents}
+\item{money}{double specifying initial money for agents}
 
 \item{win}{double specifying multiplier for money given a win (should be strictly positive)}
 

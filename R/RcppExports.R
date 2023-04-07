@@ -4,13 +4,26 @@
 #' ergodic process simulator
 #' @param agents integer specifying the number of agents 
 #' @param rounds integer specifying the number of rounds
-#' @param money integer specifying initial money for agents 
+#' @param money double specifying initial money for agents 
 #' @param win double specifying multiplier for money given a win (should be strictly positive)
 #' @param loss double specifying multiplier for money given a loss (should be strictly positive)
 #' @param prob double specifying probability of a win 
 #' @return a matrix of agent money per round where rows are rounds and columns are agents 
 ergodic_sim <- function(agents, rounds, money, win, loss, prob) {
     .Call(`_misccpp_ergodic_sim`, agents, rounds, money, win, loss, prob)
+}
+
+#' gamblers ruin simulation 
+#' @param n_runs integer number of simulations
+#' @param money_start double initial money 
+#' @param money_end double money to be achieved 
+#' @param p_win double win probability 
+#' @param risk_adjust double proportion of money to bet
+#' @param adaptive bool indicating whether to use adaptive betting (based on bayesian estimation of win probability)
+#' @param prior_beta integer vector holding alpha and beta parameters of the p_win prior 
+#' @return a List holding a vector indicating rounds and a vector indicating busts for each run 
+ruin_sim <- function(n_runs, money_start, money_end, p_win, risk_adjust, adaptive, prior_p_win) {
+    .Call(`_misccpp_ruin_sim`, n_runs, money_start, money_end, p_win, risk_adjust, adaptive, prior_p_win)
 }
 
 #' kmean 
