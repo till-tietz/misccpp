@@ -1,12 +1,11 @@
+#include <omp.h>
 #include <RcppArmadillo.h>
 #include <unistd.h>
 #include <vector>
-#include <omp.h>
 #include <iostream>
 #include <chrono>
-// [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(openmp)]]
-
+// [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
 int add_par(int n, int ncores) {
@@ -46,7 +45,7 @@ std::vector<int> write_vec_par(std::vector<int> x, int y, int ncores) {
   std::vector<int> res(x.size());
   // Copy elements of x into res
   std::copy(x.begin(), x.end(), res.begin()); 
-  #pragma omp parallel num_threads(ncores) default(none) shared(res,p,y)
+  #pragma omp parallel num_threads(ncores) default(none) shared(res,y)
   {
     #pragma omp for
     for(int i = 0; i < res.size(); i++) {
