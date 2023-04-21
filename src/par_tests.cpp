@@ -4,7 +4,9 @@
 #include <omp.h>
 #include <iostream>
 #include <chrono>
+// [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(openmp)]]
+
 
 // [[Rcpp::export]]
 int add_par(int n, int ncores) {
