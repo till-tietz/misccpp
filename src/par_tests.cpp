@@ -10,7 +10,8 @@
 // [[Rcpp::export]]
 int add_par(int n, int ncores) {
   int res = 0;
-  #pragma omp parallel num_threads(ncores) reduction(+: res)
+  omp_set_num_threads(ncores);
+  #pragma omp parallel reduction(+: res)
   {
     #pragma omp for
     for(int i = 0; i < n; i++) {
